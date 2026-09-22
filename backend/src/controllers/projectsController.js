@@ -23,7 +23,6 @@ async function getOne(req, res) {
   });
 }
 
-// POST /api/projects — Step: "Enter Project Name" + "Associate Context"
 async function create(req, res) {
   const { name, contextText } = req.body;
 
@@ -46,7 +45,6 @@ async function create(req, res) {
   res.status(201).json(Project.serialize(project));
 }
 
-// PUT /api/projects/:id/options — choose what the AI should generate
 async function updateOptions(req, res) {
   const project = Project.findById(req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found' });
@@ -67,7 +65,6 @@ async function updateOptions(req, res) {
   res.json(Project.serialize(Project.findById(project.id)));
 }
 
-// POST /api/projects/:id/generate — runs the AI, builds Workflows -> Rules -> User Stories -> Test Cases
 async function generate(req, res) {
   const project = Project.findById(req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found' });
@@ -78,8 +75,6 @@ async function generate(req, res) {
       generateTestCases: !!project.generate_test_cases,
     });
 
-    // Idempotent: wipes any previous run's workflows/rules/user stories/test cases
-    // (cascade-deleted via the FK) so this same endpoint safely doubles as "Regenerate".
     Workflow.deleteAllForProject(project.id);
 
     for (const wf of hierarchy.workflows) {

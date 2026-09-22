@@ -6,9 +6,6 @@ const TestCase = require('../models/TestCase');
 
 const ALLOWED_STATUSES = ['approved', 'rejected', 'pending'];
 
-// The user can opt out of generating User Stories or Test Cases, which leaves that
-// review stage with zero items. Walk forward to the next stage that actually has
-// something to review so the pipeline can never dead-end on an empty list.
 const STAGE_ORDER = ['workflows', 'rules', 'user_stories', 'test_cases', 'export'];
 
 const STAGE_COUNT = {
@@ -37,7 +34,6 @@ function validateBody(req, res) {
   return { ids, status };
 }
 
-// POST /api/projects/:id/workflows/bulk-status
 async function bulkWorkflows(req, res) {
   const project = Project.findById(req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found' });
@@ -56,7 +52,6 @@ async function bulkWorkflows(req, res) {
   });
 }
 
-// POST /api/projects/:id/rules/bulk-status
 async function bulkRules(req, res) {
   const project = Project.findById(req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found' });
@@ -75,7 +70,6 @@ async function bulkRules(req, res) {
   });
 }
 
-// POST /api/projects/:id/rules/mark-explicit
 async function markRulesExplicit(req, res) {
   const project = Project.findById(req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found' });
@@ -87,7 +81,6 @@ async function markRulesExplicit(req, res) {
   res.json({ rules: Rule.findByProject(project.id) });
 }
 
-// POST /api/projects/:id/user-stories/bulk-status
 async function bulkUserStories(req, res) {
   const project = Project.findById(req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found' });
@@ -106,7 +99,6 @@ async function bulkUserStories(req, res) {
   });
 }
 
-// POST /api/projects/:id/test-cases/bulk-status
 async function bulkTestCases(req, res) {
   const project = Project.findById(req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found' });

@@ -61,7 +61,7 @@ async function callGroq(userContent, systemPrompt) {
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userContent },
       ],
-      response_format: { type: 'json_object' }, // Groq/OpenAI-style strict JSON mode
+      response_format: { type: 'json_object' },
       temperature: 0.6,
       max_tokens: 8000,
     }),

@@ -2,7 +2,6 @@ const TestCase = require('../models/TestCase');
 
 const ALLOWED_CATEGORIES = ['positive', 'negative', 'edge_case', 'validation'];
 
-// PUT /api/test-cases/:id — manually refine/correct a generated test case
 async function update(req, res) {
   const existing = TestCase.findById(req.params.id);
   if (!existing) return res.status(404).json({ error: 'Test case not found' });

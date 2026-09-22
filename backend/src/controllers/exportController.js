@@ -7,7 +7,6 @@ function csvEscape(value) {
   return str;
 }
 
-// GET /api/projects/:id/export/csv
 async function exportCsv(req, res) {
   const project = Project.findById(req.params.id);
   if (!project) return res.status(404).json({ error: 'Project not found' });

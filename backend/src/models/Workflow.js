@@ -59,11 +59,11 @@ class Workflow {
     run(ids);
   }
 
-  static allApproved(projectId) {
+  static allReviewed(projectId) {
     const row = db
-      .prepare("SELECT COUNT(*) AS total, SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) AS approved FROM workflows WHERE project_id = ?")
+      .prepare("SELECT COUNT(*) AS total, SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending FROM workflows WHERE project_id = ?")
       .get(projectId);
-    return row.total > 0 && row.total === row.approved;
+    return row.total > 0 && row.pending === 0;
   }
 }
 

@@ -49,15 +49,15 @@ class UserStory {
     run(ids);
   }
 
-  static allApprovedForProject(projectId) {
+  static allReviewedForProject(projectId) {
     const row = db
       .prepare(`
-        SELECT COUNT(*) AS total, SUM(CASE WHEN us.status = 'approved' THEN 1 ELSE 0 END) AS approved
+        SELECT COUNT(*) AS total, SUM(CASE WHEN us.status = 'pending' THEN 1 ELSE 0 END) AS pending
         FROM user_stories us JOIN workflows w ON w.id = us.workflow_id
         WHERE w.project_id = ?
       `)
       .get(projectId);
-    return row.total > 0 && row.total === row.approved;
+    return row.total > 0 && row.pending === 0;
   }
 }
 

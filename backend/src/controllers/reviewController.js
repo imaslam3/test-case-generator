@@ -42,7 +42,7 @@ async function bulkWorkflows(req, res) {
 
   Workflow.setStatusBulk(body.ids, body.status);
 
-  if (Workflow.allApproved(project.id)) {
+  if (Workflow.allReviewed(project.id)) {
     advanceStage(project.id, 'workflows');
   }
 
@@ -60,7 +60,7 @@ async function bulkRules(req, res) {
 
   Rule.setStatusBulk(body.ids, body.status);
 
-  if (Rule.allApprovedForProject(project.id)) {
+  if (Rule.allReviewedForProject(project.id)) {
     advanceStage(project.id, 'rules');
   }
 
@@ -89,7 +89,7 @@ async function bulkUserStories(req, res) {
 
   UserStory.setStatusBulk(body.ids, body.status);
 
-  if (UserStory.allApprovedForProject(project.id)) {
+  if (UserStory.allReviewedForProject(project.id)) {
     advanceStage(project.id, 'user_stories');
   }
 
@@ -107,7 +107,7 @@ async function bulkTestCases(req, res) {
 
   TestCase.setStatusBulk(body.ids, body.status);
 
-  if (TestCase.allApprovedForProject(project.id)) {
+  if (TestCase.allReviewedForProject(project.id)) {
     Project.setStage(project.id, 'export');
   }
 

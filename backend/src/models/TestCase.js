@@ -88,15 +88,15 @@ class TestCase {
     run(ids);
   }
 
-  static allApprovedForProject(projectId) {
+  static allReviewedForProject(projectId) {
     const row = db
       .prepare(`
-        SELECT COUNT(*) AS total, SUM(CASE WHEN tc.status = 'approved' THEN 1 ELSE 0 END) AS approved
+        SELECT COUNT(*) AS total, SUM(CASE WHEN tc.status = 'pending' THEN 1 ELSE 0 END) AS pending
         FROM test_cases tc JOIN workflows w ON w.id = tc.workflow_id
         WHERE w.project_id = ?
       `)
       .get(projectId);
-    return row.total > 0 && row.total === row.approved;
+    return row.total > 0 && row.pending === 0;
   }
 }
 

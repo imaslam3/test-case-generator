@@ -9,19 +9,15 @@ import ChatLog from './components/ChatLog.jsx';
 import StageNav from './components/StageNav.jsx';
 import * as api from './api.js';
 
-// screen states, distinct from the backend project.stage
 const SCREEN = {
   WELCOME: 'welcome',
   SETUP: 'setup',
   OPTIONS: 'options',
-  PIPELINE: 'pipeline', // workflows / rules / user_stories / test_cases / export, driven by project.stage
+  PIPELINE: 'pipeline',
 };
 
 const STORAGE_KEY = 'tcg_project_id';
 
-// Shown when the backend moves the project to a new stage. Stages with nothing to
-// review (e.g. User Stories, when the user opted out) are skipped server-side, so
-// deriving the message from the new stage keeps the log honest.
 const STAGE_MESSAGE = {
   rules: 'Step 2: review the rules',
   user_stories: 'Step 3: review the user stories',
@@ -29,10 +25,6 @@ const STAGE_MESSAGE = {
   export: 'Everything is approved — export the test cases.',
 };
 
-// project.stage from the server only ever moves forward (it's the "how far has
-// this project actually progressed" record). PIPELINE_ORDER lets the UI reason
-// about that progress without hardcoding index numbers everywhere, and normalizes
-// 'exported' (post-download) back onto the same tab as 'export'.
 const PIPELINE_ORDER = ['workflows', 'rules', 'user_stories', 'test_cases', 'export'];
 const PIPELINE_LABEL = {
   workflows: 'Workflows',
@@ -50,17 +42,12 @@ export default function App() {
   const [resuming, setResuming] = useState(true);
   const [error, setError] = useState(null);
   const [log, setLog] = useState([]);
-  // Which pipeline stage is currently on screen. null = "follow the project's real progress".
-  // Set when the person clicks an earlier tab in StageNav to go back and review/edit.
   const [viewStage, setViewStage] = useState(null);
 
   function pushLog(line) {
     setLog((prev) => [...prev, line]);
   }
 
-  // On load (including a hard browser refresh), reconnect to whichever project
-  // was last open — the data itself was always safe in SQLite, but without this
-  // the UI had no way to find its way back to it.
   useEffect(() => {
     const savedId = localStorage.getItem(STORAGE_KEY);
     if (!savedId) {
@@ -75,7 +62,6 @@ export default function App() {
         pushLog(`Resumed project "${full.name}".`);
       })
       .catch(() => {
-        // Project no longer exists server-side — clear the stale pointer and start fresh.
         localStorage.removeItem(STORAGE_KEY);
       })
       .finally(() => setResuming(false));
@@ -155,8 +141,6 @@ export default function App() {
     }
   }
 
-  // "Regenerate: re-prompt the AI if the initial output is unsatisfactory" —
-  // available at any point in the review pipeline, not just before the first generation.
   async function handleRegenerate() {
     setError(null);
     setLoading(true);
@@ -173,7 +157,6 @@ export default function App() {
     }
   }
 
-  // "Edit: ability to manually refine or correct specific test cases"
   async function handleEditTestCase(id, payload) {
     try {
       await api.updateTestCase(id, payload);
@@ -184,9 +167,6 @@ export default function App() {
     }
   }
 
-  // Which stage tabs exist at all is data-driven: a stage the person opted out of
-  // (empty User Stories, say) never got real content, so it never appears as a tab.
-  // 'export' only appears once the project has actually reached it.
   const currentStage = project ? normalizeStage(project.stage) : null;
   const availableStages = project
     ? PIPELINE_ORDER.filter((stage) => {

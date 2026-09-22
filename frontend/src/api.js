@@ -32,8 +32,6 @@ export const updateProjectOptions = (id, options) =>
 export const generateHierarchy = (id) =>
   fetch(`${BASE_URL}/projects/${id}/generate`, { method: 'POST' }).then(handleResponse);
 
-// Regenerate reuses the same endpoint — the backend wipes and rebuilds the
-// hierarchy, which is what makes it safe to call more than once.
 export const regenerateHierarchy = generateHierarchy;
 
 export const updateTestCase = (id, payload) =>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 export default function ProjectSetup({ onSubmit, onCancel, isLoading }) {
-  const [step, setStep] = useState('name'); // 'name' | 'context'
+  const [step, setStep] = useState('name');
   const [name, setName] = useState('');
   const [contextText, setContextText] = useState('');
 

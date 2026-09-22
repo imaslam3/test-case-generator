@@ -1,7 +1,3 @@
-// Lets the person move back to a stage they've already passed (to re-review or
-// edit) and forward again to wherever the project's actual progress is. This is
-// purely a client-side "which screen am I looking at" state — it never rewinds
-// the server-side project.stage, so approvals already made are never lost.
 const STAGE_LABELS = {
   workflows: 'Workflows',
   rules: 'Rules',
